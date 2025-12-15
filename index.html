@@ -407,314 +407,117 @@
                     </a>
                 </div>
             </div>
-            ```html
-            <div class="flex-1 w-full space-y-4">
-                <div>
-                    <div class="flex items-center gap-3 mb-2">
-                        <h3 class="text-2xl font-bold text-white tracking-tight" id="resultTitle">
-                            Hasil Analisis</h3>
-                        <span id="resultBadge"
-                            class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide border bg-slate-800 border-slate-700 text-slate-400">
-                            Status
-                        </span>
-                    </div>
-                    <div class="prose prose-invert prose-sm max-w-none">
-                        <p class="text-slate-300 leading-relaxed" id="resultMessage">
-                            <!-- Message injected by JS -->
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Progress Bar -->
-                <div class="bg-slate-900/50 rounded-xl p-4 border border-white/5">
-                    <div class="flex justify-between items-end mb-2">
-                        <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Tingkat
-                            Keyakinan Model</span>
-                        <span id="confidenceValue" class="text-2xl font-bold text-white">0%</span>
-                    </div>
-                    <div class="w-full bg-slate-700/50 rounded-full h-3 overflow-hidden">
-                        <div id="confidenceBar"
-                            class="h-full rounded-full transition-all duration-1000 ease-out relative"
-                            style="width: 0%">
-                            <div class="absolute inset-0 bg-white/20 animate-pulse"></div>
-                        </div>
-                    </div>
-                    <p class="text-xs text-slate-500 mt-2 text-right">Persentase menunjukkan
-                        seberapa yakin sistem terhadap prediksi ini.</p>
-                </div>
-            </div>
         </div>
-        </div>
-        </div>
+    </footer>
 
-        </div>
-        </div>
+    <!-- Logic Script -->
+    <script>
+        document.getElementById('predictionForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
 
-        <!-- Detailed Sections -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 pt-12" id="about">
-            <div class="glass-panel p-8 rounded-2xl border border-white/5 space-y-4">
-                <h3 class="text-xl font-bold text-white flex items-center gap-2">
-                    <span class="w-1 h-6 bg-brand-500 rounded-full"></span>
-                    Tentang Hoax Buster
-                </h3>
-                <p class="text-slate-400 leading-relaxed text-sm">
-                    Proyek ini dikembangkan sebagai upaya menanggulangi penyebaran berita bohong (hoax) di
-                    Indonesia. Memanfaatkan teknologi
-                    <em>Natural Language Processing (NLP)</em>, sistem ini mempelajari pola linguistik, struktur
-                    kalimat, dan kosakata yang sering digunakan dalam berita fabrikasi.
-                </p>
-                <p class="text-slate-400 leading-relaxed text-sm">
-                    Tujuan utama kami adalah menyediakan alat verifikasi awal yang cepat dan mudah diakses bagi
-                    masyarakat umum untuk menyaring informasi sebelum membagikannya.
-                </p>
-            </div>
+            // UI References
+            const btn = document.querySelector('button[type="submit"]');
+            const btnText = document.getElementById('btnText');
+            const btnLoader = document.getElementById('btnLoader');
+            const resultArea = document.getElementById('resultArea');
+            const resultCard = document.getElementById('resultCard');
+            const resultTitle = document.getElementById('resultTitle');
+            const resultBadge = document.getElementById('resultBadge');
+            const resultMessage = document.getElementById('resultMessage');
+            const resultIcon = document.getElementById('resultIcon');
+            const confidenceBar = document.getElementById('confidenceBar');
+            const confidenceValue = document.getElementById('confidenceValue');
 
-            <div class="glass-panel p-8 rounded-2xl border border-white/5 space-y-4" id="methodology">
-                <h3 class="text-xl font-bold text-white flex items-center gap-2">
-                    <span class="w-1 h-6 bg-purple-500 rounded-full"></span>
-                    Metodologi & Dataset
-                </h3>
-                <p class="text-slate-400 leading-relaxed text-sm">
-                    Model Machine Learning di balik sistem ini dilatih menggunakan ribuan artikel berita berbahasa
-                    Indonesia yang telah dilabeli secara manual oleh ahli (fakta vs hoax).
-                </p>
-                <ul class="space-y-2 text-sm text-slate-400 mt-2">
-                    <li class="flex items-start gap-2">
-                        <svg class="w-5 h-5 text-brand-500 flex-shrink-0" fill="none" stroke="currentColor"
-                            viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                        <span><strong>Preprocessing:</strong> Pembersihan teks, stemming, dan penghapusan
-                            stopword.</span>
-                    </li>
-                    <li class="flex items-start gap-2">
-                        <svg class="w-5 h-5 text-brand-500 flex-shrink-0" fill="none" stroke="currentColor"
-                            viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                        <span><strong>Ekstraksi Fitur:</strong> Menggunakan TF-IDF untuk pembobotan kata.</span>
-                    </li>
-                    <li class="flex items-start gap-2">
-                        <svg class="w-5 h-5 text-brand-500 flex-shrink-0" fill="none" stroke="currentColor"
-                            viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                        <span><strong>Model:</strong> Implementasi algoritma klasifikasi probabilistik.</span>
-                    </li>
-                </ul>
-            </div>
-        </div>
+            // Input values
+            const titleInput = document.getElementById('title').value;
+            const contentInput = document.getElementById('content').value;
 
-        <!-- Features Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4">
-            <div class="glass-panel p-6 rounded-xl border border-white/5 hover:bg-slate-800/50 transition-colors">
-                <div
-                    class="w-12 h-12 bg-blue-500/10 rounded-lg flex items-center justify-center text-blue-400 mb-4 border border-blue-500/20">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                    </svg>
-                </div>
-                <h3 class="text-white font-semibold mb-2">Analisis Real-time</h3>
-                <p class="text-slate-400 text-sm leading-relaxed">Sistem memproses input teks secara instan tanpa
-                    antrean server, memberikan hasil prediksi dalam hitungan milidetik langsung di peramban Anda.
-                </p>
-            </div>
-            <div class="glass-panel p-6 rounded-xl border border-white/5 hover:bg-slate-800/50 transition-colors">
-                <div
-                    class="w-12 h-12 bg-purple-500/10 rounded-lg flex items-center justify-center text-purple-400 mb-4 border border-purple-500/20">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                </div>
-                <h3 class="text-white font-semibold mb-2">Akurasi Teruji</h3>
-                <p class="text-slate-400 text-sm leading-relaxed">Model dilatih secara spesifik untuk mengenali
-                    struktur kalimat provokatif, penggunaan huruf kapital berlebih, dan indikator hoax umum lainnya.
-                </p>
-            </div>
-            <div class="glass-panel p-6 rounded-xl border border-white/5 hover:bg-slate-800/50 transition-colors">
-                <div
-                    class="w-12 h-12 bg-emerald-500/10 rounded-lg flex items-center justify-center text-emerald-400 mb-4 border border-emerald-500/20">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z">
-                        </path>
-                    </svg>
-                </div>
-                <h3 class="text-white font-semibold mb-2">Privasi & Keamanan</h3>
-                <p class="text-slate-400 text-sm leading-relaxed">Teks berita Anda diproses secara lokal atau
-                    sementara (stateless). Kami tidak menyimpan, mengarsipkan, atau membagikan data input pengguna.
-                </p>
-            </div>
-        </div>
+            // Loading State
+            btn.disabled = true;
+            btnText.classList.add('hidden');
+            btnLoader.classList.remove('hidden');
+            btnLoader.classList.add('flex');
+            resultArea.classList.add('hidden'); // Hide previous result
 
-        </div>
-        </main>
+            // Update Text to warn about cold start
+            const originalBtnText = btnText.innerHTML;
 
-        <!-- Footer -->
-        <footer class="border-t border-white/5 bg-slate-900/80 backdrop-blur-md mt-auto">
-            <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
-                    <div class="col-span-1 md:col-span-2">
-                        <span class="text-xl font-bold tracking-tight text-white mb-4 block">Hoax<span
-                                class="text-brand-500">Buster</span></span>
-                        <p class="text-slate-400 text-sm leading-relaxed max-w-sm">
-                            Platform edukasi dan deteksi dini berita bohong berbasis kecerdasan buatan. Mari ciptakan
-                            ekosistem informasi digital yang sehat dan terpercaya.
-                        </p>
-                    </div>
-                    <div>
-                        <h4 class="text-white font-semibold mb-4 text-sm uppercase tracking-wider">Sumber Daya</h4>
-                        <ul class="space-y-2 text-sm text-slate-400">
-                            <li><a href="#" class="hover:text-brand-400 transition-colors">Dokumentasi API</a></li>
-                            <li><a href="https://kaggle.com" target="_blank"
-                                    class="hover:text-brand-400 transition-colors">Dataset Berita</a></li>
-                            <li><a href="#" class="hover:text-brand-400 transition-colors">Jurnal Referensi</a></li>
-                        </ul>
-                    </div>
-                    <div>
-                        <h4 class="text-white font-semibold mb-4 text-sm uppercase tracking-wider">Kontak</h4>
-                        <ul class="space-y-2 text-sm text-slate-400">
-                            <li><a href="mailto:info@hoaxbuster.example"
-                                    class="hover:text-brand-400 transition-colors">info@hoaxbuster.example</a></li>
-                            <li><a href="#" class="hover:text-brand-400 transition-colors">Universitas Trunojoyo
-                                    Madura</a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-                    <p class="text-slate-500 text-xs text-center md:text-left">
-                        &copy; 2025 Hoax Buster AI Project. Dibuat dengan <span class="text-red-500">❤</span> untuk
-                        Tugas
-                        Machine Learning.
-                    </p>
-                    <div class="flex space-x-6">
-                        <a href="#" class="text-slate-500 hover:text-white transition-colors"><span
-                                class="sr-only">GitHub</span>
-                            <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
-                                <path fill-rule="evenodd"
-                                    d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
-                                    clip-rule="evenodd"></path>
-                            </svg>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </footer>
+            try {
+                // API URL
+                const API_URL = "https://edi-mj-hoax-detection-api.hf.space/predict";
 
-        <!-- Logic Script -->
-        <script>
-            document.getElementById('predictionForm').addEventListener('submit', async function (e) {
-                e.preventDefault();
+                // Construct Request Body (Note: API expects 'judul' and 'isi')
+                const requestBody = {
+                    judul: titleInput,
+                    isi: contentInput
+                };
 
-                // UI References
-                const btn = document.querySelector('button[type="submit"]');
-                const btnText = document.getElementById('btnText');
-                const btnLoader = document.getElementById('btnLoader');
-                const resultArea = document.getElementById('resultArea');
-                const resultCard = document.getElementById('resultCard');
-                const resultTitle = document.getElementById('resultTitle');
-                const resultBadge = document.getElementById('resultBadge');
-                const resultMessage = document.getElementById('resultMessage');
-                const resultIcon = document.getElementById('resultIcon');
-                const confidenceBar = document.getElementById('confidenceBar');
-                const confidenceValue = document.getElementById('confidenceValue');
+                console.log("Sending request:", requestBody);
 
-                // Input values
-                const titleInput = document.getElementById('title').value;
-                const contentInput = document.getElementById('content').value;
+                // Fetch Request
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(requestBody)
+                });
 
-                // Loading State
-                btn.disabled = true;
-                btnText.classList.add('hidden');
-                btnLoader.classList.remove('hidden');
-                btnLoader.classList.add('flex');
-                resultArea.classList.add('hidden'); // Hide previous result
+                if (!response.ok) {
+                    throw new Error(`API Error: ${response.statusText}`);
+                }
 
-                // Update Text to warn about cold start
-                const originalBtnText = btnText.innerHTML;
+                const data = await response.json();
+                console.log("API Response:", data);
 
-                try {
-                    // API URL
-                    const API_URL = "https://edi-mj-hoax-detection-api.hf.space/predict";
+                // PARSE RESPONSE
+                // Anticipating format based on user request: { "prediction": "Hoax", "confidence": 0.XX } 
+                // OR { "label": "Hoax", "score": 0.XX }
+                // We will normalize it.
 
-                    // Construct Request Body (Note: API expects 'judul' and 'isi')
-                    const requestBody = {
-                        judul: titleInput,
-                        isi: contentInput
-                    };
+                let prediction = "";
+                let confidence = 0;
 
-                    console.log("Sending request:", requestBody);
+                // Try to find prediction
+                if (data.prediction) prediction = data.prediction;
+                else if (data.label) prediction = data.label;
+                else if (data.result) prediction = data.result;
+                else if (data.class) prediction = data.class;
 
-                    // Fetch Request
-                    const response = await fetch(API_URL, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Accept': 'application/json'
-                        },
-                        body: JSON.stringify(requestBody)
-                    });
+                // Try to find confidence/score
+                if (data.confidence !== undefined) confidence = parseFloat(data.confidence);
+                else if (data.score !== undefined) confidence = parseFloat(data.score);
+                else if (data.probability !== undefined) confidence = parseFloat(data.probability);
+                else if (data.percentage !== undefined) confidence = parseFloat(data.percentage);
 
-                    if (!response.ok) {
-                        throw new Error(`API Error: ${response.statusText}`);
-                    }
+                // Normalize confidence to 0-100 range if it comes in as 0-1
+                if (confidence <= 1 && confidence > 0) {
+                    confidence = Math.round(confidence * 100);
+                } else {
+                    confidence = Math.round(confidence);
+                }
 
-                    const data = await response.json();
-                    console.log("API Response:", data);
+                // Determine Valid vs Hoax based on String content (Case insensitive)
+                const lowerPred = prediction.toLowerCase();
+                const isHoax = lowerPred.includes('hoax') || lowerPred.includes('fake') || lowerPred.includes('bohong');
 
-                    // PARSE RESPONSE
-                    // Anticipating format based on user request: { "prediction": "Hoax", "confidence": 0.XX } 
-                    // OR { "label": "Hoax", "score": 0.XX }
-                    // We will normalize it.
+                // Show Result Area
+                resultArea.classList.remove('hidden');
 
-                    let prediction = "";
-                    let confidence = 0;
+                if (isHoax) {
+                    // HOAX STYLE
+                    resultCard.className = "rounded-2xl p-6 sm:p-8 border border-red-500/30 bg-gradient-to-br from-slate-900 to-red-900/20 shadow-lg shadow-red-900/10 animate-fade-in";
+                    resultIcon.className = "w-16 h-16 rounded-2xl flex items-center justify-center text-3xl shadow-inner bg-red-500/10 text-red-500 ring-1 ring-red-500/20";
+                    resultIcon.innerHTML = '<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>';
 
-                    // Try to find prediction
-                    if (data.prediction) prediction = data.prediction;
-                    else if (data.label) prediction = data.label;
-                    else if (data.result) prediction = data.result;
-                    else if (data.class) prediction = data.class;
+                    resultTitle.className = "text-2xl font-bold text-red-400 tracking-tight";
+                    resultTitle.textContent = "Terindikasi HOAX";
 
-                    // Try to find confidence/score
-                    if (data.confidence !== undefined) confidence = parseFloat(data.confidence);
-                    else if (data.score !== undefined) confidence = parseFloat(data.score);
-                    else if (data.probability !== undefined) confidence = parseFloat(data.probability);
-                    else if (data.percentage !== undefined) confidence = parseFloat(data.percentage);
+                    resultBadge.className = "px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide border bg-red-500/10 border-red-500/20 text-red-400";
+                    resultBadge.textContent = "Berisiko Tinggi";
 
-                    // Normalize confidence to 0-100 range if it comes in as 0-1
-                    if (confidence <= 1 && confidence > 0) {
-                        confidence = Math.round(confidence * 100);
-                    } else {
-                        confidence = Math.round(confidence);
-                    }
-
-                    // Determine Valid vs Hoax based on String content (Case insensitive)
-                    const lowerPred = prediction.toLowerCase();
-                    const isHoax = lowerPred.includes('hoax') || lowerPred.includes('fake') || lowerPred.includes('bohong');
-
-                    // Show Result Area
-                    resultArea.classList.remove('hidden');
-
-                    if (isHoax) {
-                        // HOAX STYLE
-                        resultCard.className = "rounded-2xl p-6 sm:p-8 border border-red-500/30 bg-gradient-to-br from-slate-900 to-red-900/20 shadow-lg shadow-red-900/10 animate-fade-in";
-                        resultIcon.className = "w-16 h-16 rounded-2xl flex items-center justify-center text-3xl shadow-inner bg-red-500/10 text-red-500 ring-1 ring-red-500/20";
-                        resultIcon.innerHTML = '<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>';
-
-                        resultTitle.className = "text-2xl font-bold text-red-400 tracking-tight";
-                        resultTitle.textContent = "Terindikasi HOAX";
-
-                        resultBadge.className = "px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide border bg-red-500/10 border-red-500/20 text-red-400";
-                        resultBadge.textContent = "Berisiko Tinggi";
-
-                        resultMessage.innerHTML = `
+                    resultMessage.innerHTML = `
                         <span class="block mb-2 font-semibold text-white">Sistem mendeteksi indikasi ketidakbenaran.</span>
                         Model AI memprediksi berita ini sebagai <strong>HOAX</strong>. 
                         Pastikan untuk memeriksa kembali informasi ini melalui sumber-sumber resmi atau situs pencari fakta.
@@ -722,20 +525,20 @@
                         <span class="text-xs text-slate-400">Raw Prediction: ${prediction}</span>
                     `;
 
-                        confidenceBar.className = "h-full rounded-full transition-all duration-1000 ease-out relative bg-gradient-to-r from-red-600 to-orange-600";
-                    } else {
-                        // VALID STYLE
-                        resultCard.className = "rounded-2xl p-6 sm:p-8 border border-emerald-500/30 bg-gradient-to-br from-slate-900 to-emerald-900/20 shadow-lg shadow-emerald-900/10 animate-fade-in";
-                        resultIcon.className = "w-16 h-16 rounded-2xl flex items-center justify-center text-3xl shadow-inner bg-emerald-500/10 text-emerald-500 ring-1 ring-emerald-500/20";
-                        resultIcon.innerHTML = '<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>';
+                    confidenceBar.className = "h-full rounded-full transition-all duration-1000 ease-out relative bg-gradient-to-r from-red-600 to-orange-600";
+                } else {
+                    // VALID STYLE
+                    resultCard.className = "rounded-2xl p-6 sm:p-8 border border-emerald-500/30 bg-gradient-to-br from-slate-900 to-emerald-900/20 shadow-lg shadow-emerald-900/10 animate-fade-in";
+                    resultIcon.className = "w-16 h-16 rounded-2xl flex items-center justify-center text-3xl shadow-inner bg-emerald-500/10 text-emerald-500 ring-1 ring-emerald-500/20";
+                    resultIcon.innerHTML = '<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>';
 
-                        resultTitle.className = "text-2xl font-bold text-emerald-400 tracking-tight";
-                        resultTitle.textContent = "Terindikasi VALID";
+                    resultTitle.className = "text-2xl font-bold text-emerald-400 tracking-tight";
+                    resultTitle.textContent = "Terindikasi VALID";
 
-                        resultBadge.className = "px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide border bg-emerald-500/10 border-emerald-500/20 text-emerald-400";
-                        resultBadge.textContent = "Dapat Dipercaya";
+                    resultBadge.className = "px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide border bg-emerald-500/10 border-emerald-500/20 text-emerald-400";
+                    resultBadge.textContent = "Dapat Dipercaya";
 
-                        resultMessage.innerHTML = `
+                    resultMessage.innerHTML = `
                         <span class="block mb-2 font-semibold text-white">Berita ini terdeteksi Valid.</span>
                         Model AI memprediksi bahwa konten berita ini konsisten dengan pola berita <strong>FAKTA</strong>.
                         Namun, tetaplah kritis dan verifikasi sumbernya.
@@ -743,33 +546,32 @@
                         <span class="text-xs text-slate-400">Raw Prediction: ${prediction}</span>
                     `;
 
-                        confidenceBar.className = "h-full rounded-full transition-all duration-1000 ease-out relative bg-gradient-to-r from-emerald-500 to-teal-500";
-                    }
-
-                    // Animate Bar
-                    setTimeout(() => {
-                        confidenceBar.style.width = `${confidence}%`;
-                        confidenceValue.textContent = `${confidence}%`;
-                    }, 100);
-
-                    // Scroll to result
-                    setTimeout(() => {
-                        resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-                    }, 100);
-
-                } catch (error) {
-                    console.error("Prediction Error:", error);
-                    alert("Terjadi kesalahan saat menghubungi server: " + error.message + ". Silakan coba lagi.");
-                } finally {
-                    // RESET STATE
-                    btn.disabled = false;
-                    btnText.classList.remove('hidden');
-                    btnLoader.classList.add('hidden');
-                    btnLoader.classList.remove('flex');
+                    confidenceBar.className = "h-full rounded-full transition-all duration-1000 ease-out relative bg-gradient-to-r from-emerald-500 to-teal-500";
                 }
-            });
-        </script>
+
+                // Animate Bar
+                setTimeout(() => {
+                    confidenceBar.style.width = `${confidence}%`;
+                    confidenceValue.textContent = `${confidence}%`;
+                }, 100);
+
+                // Scroll to result
+                setTimeout(() => {
+                    resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }, 100);
+
+            } catch (error) {
+                console.error("Prediction Error:", error);
+                alert("Terjadi kesalahan saat menghubungi server: " + error.message + ". Silakan coba lagi.");
+            } finally {
+                // RESET STATE
+                btn.disabled = false;
+                btnText.classList.remove('hidden');
+                btnLoader.classList.add('hidden');
+                btnLoader.classList.remove('flex');
+            }
+        });
+    </script>
 </body>
 
 </html>
-```

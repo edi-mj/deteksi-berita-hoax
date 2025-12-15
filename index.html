@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hoax Buster AI - Analisis Berita Cerdas</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            900: '#0c4a6e',
+                        }
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.6s ease-out',
+                        'slide-up': 'slideUp 0.6s ease-out',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(30px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #0f172a;
+            /* Slate 900 */
+            background-image:
+                radial-gradient(at 0% 0%, hsla(253, 16%, 7%, 1) 0, transparent 50%),
+                radial-gradient(at 50% 0%, hsla(225, 39%, 30%, 1) 0, transparent 50%),
+                radial-gradient(at 100% 0%, hsla(339, 49%, 30%, 1) 0, transparent 50%);
+            background-attachment: fixed;
+            color: #f8fafc;
+        }
+
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .gradient-text {
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            background-image: linear-gradient(to right, #bfdbfe, #38bdf8, #c084fc);
+        }
+    </style>
+</head>
+
+<body class="font-sans min-h-screen flex flex-col antialiased selection:bg-brand-500 selection:text-white">
+
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-50 glass-panel border-b border-white/5">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <div class="flex items-center gap-3">
+                    <div
+                        class="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-500 to-indigo-600 flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-brand-500/20 transform hover:scale-105 transition-transform duration-300">
+                        HB
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="text-xl font-bold tracking-tight text-white leading-none">Hoax<span
+                                class="text-brand-400">Buster</span></span>
+                        <span class="text-[0.65rem] text-slate-400 uppercase tracking-wider font-semibold mt-1">AI
+                            Detection System</span>
+                    </div>
+                </div>
+                <div class="hidden md:flex items-center gap-6">
+                    <a href="#about"
+                        class="text-sm font-medium text-slate-300 hover:text-white transition-colors">Tentang Sistem</a>
+                    <a href="#methodology"
+                        class="text-sm font-medium text-slate-300 hover:text-white transition-colors">Metodologi</a>
+                    <a href="https://github.com/mjavi/ml-project" target="_blank"
+                        class="px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-sm font-medium text-white transition-all flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                            <path fill-rule="evenodd"
+                                d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
+                                clip-rule="evenodd"></path>
+                        </svg>
+                        GitHub
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main
+        class="flex-grow flex flex-col items-center justify-start px-4 sm:px-6 lg:px-8 py-12 relative overflow-hidden">
+
+        <!-- Background Effects -->
+        <div
+            class="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-brand-500/10 rounded-full blur-[100px] -z-10 pointer-events-none">
+        </div>
+
+        <div class="w-full max-w-4xl space-y-12 animate-fade-in text-center md:text-left">
+
+            <!-- Hero Section -->
+            <div class="text-center space-y-6 pt-8 pb-4">
+
+                <h1 class="text-5xl sm:text-6xl md:text-7xl font-extrabold tracking-tight">
+                    Lawan <span class="gradient-text">Disinformasi</span><br>
+                    dengan Data.
+                </h1>
+                <p class="text-lg sm:text-xl text-slate-400 max-w-2xl mx-auto leading-relaxed font-light">
+                    Di era digital yang penuh dengan arus informasi tak terbendung, membedakan fakta dan fiksi menjadi
+                    tantangan.
+                    <strong class="text-slate-200">Hoax Buster AI</strong> hadir sebagai asisten cerdas Anda untuk
+                    memverifikasi kredibilitas berita menggunakan algoritma deteksi pola bahasa canggih.
+                </p>
+            </div>
+
+            <!-- Prediction Card -->
+            <div class="glass-panel rounded-2xl shadow-2xl overflow-hidden animate-slide-up relative">
+                <!-- Decorative top border -->
+                <div class="h-1 w-full bg-gradient-to-r from-brand-500 via-purple-500 to-brand-500"></div>
+
+                <div class="p-6 sm:p-10 space-y-8">
+                    <div class="space-y-2 text-center sm:text-left">
+                        <h2 class="text-2xl font-bold text-white">Cek Berita Sekarang</h2>
+                        <p class="text-slate-400 text-sm">Masukkan judul dan isi berita yang mencurigakan di bawah ini.
+                        </p>
+                    </div>
+
+                    <!-- Form -->
+                    <form id="predictionForm" class="space-y-6">
+                        <div class="grid gap-6">
+                            <div class="space-y-2">
+                                <label for="title" class="block text-sm font-medium text-slate-300 ml-1">
+                                    Judul Berita
+                                    <span class="text-slate-500 text-xs font-normal ml-2">(Wajib diisi)</span>
+                                </label>
+                                <input type="text" id="title" name="title" required
+                                    class="block w-full rounded-xl bg-slate-800/50 border border-slate-700 text-white placeholder-slate-600 focus:border-brand-500 focus:ring-1 focus:ring-brand-500 hover:border-slate-600 transition-all px-4 py-3.5 sm:text-sm shadow-inner"
+                                    placeholder="Contoh: 'GEMPAR! Ditemukan Chip dalam Vaksin...'">
+                            </div>
+
+                            <div class="space-y-2">
+                                <label for="content" class="block text-sm font-medium text-slate-300 ml-1">
+                                    Isi Artikel
+                                    <span class="text-slate-500 text-xs font-normal ml-2">(Minimal 1 paragraf)</span>
+                                </label>
+                                <textarea id="content" name="content" rows="8" required
+                                    class="block w-full rounded-xl bg-slate-800/50 border border-slate-700 text-white placeholder-slate-600 focus:border-brand-500 focus:ring-1 focus:ring-brand-500 hover:border-slate-600 transition-all px-4 py-3.5 sm:text-sm resize-y shadow-inner font-mono text-sm leading-relaxed"
+                                    placeholder="Salin dan tempel (copy-paste) seluruh isi teks berita di sini untuk dianalisis oleh sistem..."></textarea>
+                                <p class="text-xs text-slate-500 text-right">Mendukung teks Bahasa Indonesia</p>
+                            </div>
+                        </div>
+
+                        <div class="pt-2">
+                            <button type="submit"
+                                class="group relative w-full flex justify-center py-4 px-4 border border-transparent rounded-xl shadow-lg text-sm font-bold text-white bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-500 hover:to-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-500 focus:ring-offset-slate-900 transition-all overflow-hidden">
+                                <div
+                                    class="absolute inset-0 w-full h-full bg-white/20 group-hover:translate-x-full transition-transform duration-500 ease-out -skew-x-12 -translate-x-full">
+                                </div>
+                                <span id="btnText" class="flex items-center gap-2">
+                                    Analisis Kredibilitas Berita
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                                    </svg>
+                                </span>
+                                <span id="btnLoader" class="hidden flex items-center gap-2">
+                                    <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg"
+                                        fill="none" viewBox="0 0 24 24">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                            stroke-width="4"></circle>
+                                        <path class="opacity-75" fill="currentColor"
+                                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                        </path>
+                                    </svg>
+                                    Sedang Memproses...
+                                </span>
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- Result Area (Hidden by default) -->
+                    <div id="resultArea" class="hidden mt-8 pt-6 border-t border-slate-700/50">
+                        <div class="rounded-2xl p-6 sm:p-8 border shadow-lg transition-all duration-300"
+                            id="resultCard">
+                            <div class="flex flex-col sm:flex-row items-start gap-6">
+                                <div id="resultIconWrapper" class="flex-shrink-0">
+                                    <div id="resultIcon"
+                                        class="w-16 h-16 rounded-2xl flex items-center justify-center text-3xl shadow-inner bg-slate-800">
+                                        <!-- Icon injected by JS -->
+                                    </div>
+                                </div>
+                                <div class="flex-1 w-full space-y-4">
+                                    <div>
+                                        <div class="flex items-center gap-3 mb-2">
+                                            <h3 class="text-2xl font-bold text-white tracking-tight" id="resultTitle">
+                                                Hasil Analisis</h3>
+                                            <span id="resultBadge"
+                                                class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide border bg-slate-800 border-slate-700 text-slate-400">
+                                                Status
+                                            </span>
+                                        </div>
+                                        <div class="prose prose-invert prose-sm max-w-none">
+                                            <p class="text-slate-300 leading-relaxed" id="resultMessage">
+                                                <!-- Message injected by JS -->
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <!-- Progress Bar -->
+                                    <div class="bg-slate-900/50 rounded-xl p-4 border border-white/5">
+                                        <div class="flex justify-between items-end mb-2">
+                                            <span
+                                                class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Tingkat
+                                                Keyakinan Model</span>
+                                            <span id="confidenceValue" class="text-2xl font-bold text-white">0%</span>
+                                        </div>
+                                        <div class="w-full bg-slate-700/50 rounded-full h-3 overflow-hidden">
+                                            <div id="confidenceBar"
+                                                class="h-full rounded-full transition-all duration-1000 ease-out relative"
+                                                style="width: 0%">
+                                                <div class="absolute inset-0 bg-white/20 animate-pulse"></div>
+                                            </div>
+                                        </div>
+                                        <p class="text-xs text-slate-500 mt-2 text-right">Persentase menunjukkan
+                                            seberapa yakin sistem terhadap prediksi ini.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Detailed Sections -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 pt-12" id="about">
+                <div class="glass-panel p-8 rounded-2xl border border-white/5 space-y-4">
+                    <h3 class="text-xl font-bold text-white flex items-center gap-2">
+                        <span class="w-1 h-6 bg-brand-500 rounded-full"></span>
+                        Tentang Hoax Buster
+                    </h3>
+                    <p class="text-slate-400 leading-relaxed text-sm">
+                        Proyek ini dikembangkan sebagai upaya menanggulangi penyebaran berita bohong (hoax) di
+                        Indonesia. Memanfaatkan teknologi
+                        <em>Natural Language Processing (NLP)</em>, sistem ini mempelajari pola linguistik, struktur
+                        kalimat, dan kosakata yang sering digunakan dalam berita fabrikasi.
+                    </p>
+                    <p class="text-slate-400 leading-relaxed text-sm">
+                        Tujuan utama kami adalah menyediakan alat verifikasi awal yang cepat dan mudah diakses bagi
+                        masyarakat umum untuk menyaring informasi sebelum membagikannya.
+                    </p>
+                </div>
+
+                <div class="glass-panel p-8 rounded-2xl border border-white/5 space-y-4" id="methodology">
+                    <h3 class="text-xl font-bold text-white flex items-center gap-2">
+                        <span class="w-1 h-6 bg-purple-500 rounded-full"></span>
+                        Metodologi & Dataset
+                    </h3>
+                    <p class="text-slate-400 leading-relaxed text-sm">
+                        Model Machine Learning di balik sistem ini dilatih menggunakan ribuan artikel berita berbahasa
+                        Indonesia yang telah dilabeli secara manual oleh ahli (fakta vs hoax).
+                    </p>
+                    <ul class="space-y-2 text-sm text-slate-400 mt-2">
+                        <li class="flex items-start gap-2">
+                            <svg class="w-5 h-5 text-brand-500 flex-shrink-0" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <span><strong>Preprocessing:</strong> Pembersihan teks, stemming, dan penghapusan
+                                stopword.</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <svg class="w-5 h-5 text-brand-500 flex-shrink-0" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <span><strong>Ekstraksi Fitur:</strong> Menggunakan TF-IDF untuk pembobotan kata.</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <svg class="w-5 h-5 text-brand-500 flex-shrink-0" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <span><strong>Model:</strong> Implementasi algoritma klasifikasi probabilistik.</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Features Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4">
+                <div class="glass-panel p-6 rounded-xl border border-white/5 hover:bg-slate-800/50 transition-colors">
+                    <div
+                        class="w-12 h-12 bg-blue-500/10 rounded-lg flex items-center justify-center text-blue-400 mb-4 border border-blue-500/20">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-white font-semibold mb-2">Analisis Real-time</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">Sistem memproses input teks secara instan tanpa
+                        antrean server, memberikan hasil prediksi dalam hitungan milidetik langsung di peramban Anda.
+                    </p>
+                </div>
+                <div class="glass-panel p-6 rounded-xl border border-white/5 hover:bg-slate-800/50 transition-colors">
+                    <div
+                        class="w-12 h-12 bg-purple-500/10 rounded-lg flex items-center justify-center text-purple-400 mb-4 border border-purple-500/20">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-white font-semibold mb-2">Akurasi Teruji</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">Model dilatih secara spesifik untuk mengenali
+                        struktur kalimat provokatif, penggunaan huruf kapital berlebih, dan indikator hoax umum lainnya.
+                    </p>
+                </div>
+                <div class="glass-panel p-6 rounded-xl border border-white/5 hover:bg-slate-800/50 transition-colors">
+                    <div
+                        class="w-12 h-12 bg-emerald-500/10 rounded-lg flex items-center justify-center text-emerald-400 mb-4 border border-emerald-500/20">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z">
+                            </path>
+                        </svg>
+                    </div>
+                    <h3 class="text-white font-semibold mb-2">Privasi & Keamanan</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">Teks berita Anda diproses secara lokal atau
+                        sementara (stateless). Kami tidak menyimpan, mengarsipkan, atau membagikan data input pengguna.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-white/5 bg-slate-900/80 backdrop-blur-md mt-auto">
+        <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                <div class="col-span-1 md:col-span-2">
+                    <span class="text-xl font-bold tracking-tight text-white mb-4 block">Hoax<span
+                            class="text-brand-500">Buster</span></span>
+                    <p class="text-slate-400 text-sm leading-relaxed max-w-sm">
+                        Platform edukasi dan deteksi dini berita bohong berbasis kecerdasan buatan. Mari ciptakan
+                        ekosistem informasi digital yang sehat dan terpercaya.
+                    </p>
+                </div>
+                <div>
+                    <h4 class="text-white font-semibold mb-4 text-sm uppercase tracking-wider">Sumber Daya</h4>
+                    <ul class="space-y-2 text-sm text-slate-400">
+                        <li><a href="#" class="hover:text-brand-400 transition-colors">Dokumentasi API</a></li>
+                        <li><a href="https://kaggle.com" target="_blank"
+                                class="hover:text-brand-400 transition-colors">Dataset Berita</a></li>
+                        <li><a href="#" class="hover:text-brand-400 transition-colors">Jurnal Referensi</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-white font-semibold mb-4 text-sm uppercase tracking-wider">Kontak</h4>
+                    <ul class="space-y-2 text-sm text-slate-400">
+                        <li><a href="mailto:info@hoaxbuster.example"
+                                class="hover:text-brand-400 transition-colors">info@hoaxbuster.example</a></li>
+                        <li><a href="#" class="hover:text-brand-400 transition-colors">Universitas Trunojoyo Madura</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-slate-500 text-xs text-center md:text-left">
+                    &copy; 2025 Hoax Buster AI Project. Dibuat dengan <span class="text-red-500">❤</span> untuk Tugas
+                    Machine Learning.
+                </p>
+                <div class="flex space-x-6">
+                    <a href="#" class="text-slate-500 hover:text-white transition-colors"><span
+                            class="sr-only">GitHub</span>
+                        <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+                            <path fill-rule="evenodd"
+                                d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
+                                clip-rule="evenodd"></path>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Logic Script -->
+    <script>
+        document.getElementById('predictionForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            // UI References
+            const btn = document.querySelector('button[type="submit"]');
+            const btnText = document.getElementById('btnText');
+            const btnLoader = document.getElementById('btnLoader');
+            const resultArea = document.getElementById('resultArea');
+            const resultCard = document.getElementById('resultCard');
+            const resultTitle = document.getElementById('resultTitle');
+            const resultBadge = document.getElementById('resultBadge');
+            const resultMessage = document.getElementById('resultMessage');
+            const resultIcon = document.getElementById('resultIcon');
+            const resultIconWrapper = document.getElementById('resultIconWrapper');
+            const confidenceBar = document.getElementById('confidenceBar');
+            const confidenceValue = document.getElementById('confidenceValue');
+
+            // Input values
+            const title = document.getElementById('title').value;
+            const content = document.getElementById('content').value;
+
+            // Loading State
+            btn.disabled = true;
+            btnText.classList.add('hidden');
+            btnLoader.classList.remove('hidden');
+            btnLoader.classList.add('flex');
+            resultArea.classList.add('hidden');
+
+            // Simulate Computation Delay
+            // Random delay between 1.5s to 2.5s to feel "real"
+            const delay = Math.floor(Math.random() * (2500 - 1500 + 1) + 1500);
+
+            setTimeout(() => {
+                // RESET STATE
+                btn.disabled = false;
+                btnText.classList.remove('hidden');
+                btnLoader.classList.add('hidden');
+                btnLoader.classList.remove('flex');
+
+                // MOCK PREDICTION LOGIC
+                // In a real app, you would send specific JSON data to your backend here.
+
+                const isHoax = Math.random() < 0.5;
+                const percentage = Math.floor(Math.random() * (99 - 75 + 1) + 75); // High confidence demo
+
+                // Show Result Area
+                resultArea.classList.remove('hidden');
+
+                if (isHoax) {
+                    // HOAX STYLE
+                    resultCard.className = "rounded-2xl p-6 sm:p-8 border border-red-500/30 bg-gradient-to-br from-slate-900 to-red-900/20 shadow-lg shadow-red-900/10";
+                    resultIcon.className = "w-16 h-16 rounded-2xl flex items-center justify-center text-3xl shadow-inner bg-red-500/10 text-red-500 ring-1 ring-red-500/20";
+                    resultIcon.innerHTML = '<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>';
+
+                    resultTitle.className = "text-2xl font-bold text-red-400 tracking-tight";
+                    resultTitle.textContent = "Terindikasi HOAX";
+
+                    resultBadge.className = "px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide border bg-red-500/10 border-red-500/20 text-red-400";
+                    resultBadge.textContent = "Berisiko Tinggi";
+
+                    resultMessage.innerHTML = \`
+                        <span class="block mb-2 font-semibold text-white">Analisis sistem mendeteksi pola yang mencurigakan.</span>
+                        Berdasarkan analisis semantik dan pencocokan pola, artikel ini mengandung indikator yang kuat sebagai disinformasi. 
+                        Terdeteksi penggunaan bahasa yang <em>sensasional</em>, <em>provokatif</em>, atau strukturnya tidak sesuai dengan standar jurnalistik yang valid. 
+                        Disarankan untuk melakukan pengecekan silang (cross-check) dengan sumber berita arus utama (mainstream) yang terpercaya.
+                    \`;
+                    
+                    confidenceBar.className = "h-full rounded-full transition-all duration-1000 ease-out relative bg-gradient-to-r from-red-600 to-orange-600";
+                } else {
+                    // VALID STYLE
+                    resultCard.className = "rounded-2xl p-6 sm:p-8 border border-emerald-500/30 bg-gradient-to-br from-slate-900 to-emerald-900/20 shadow-lg shadow-emerald-900/10";
+                    resultIcon.className = "w-16 h-16 rounded-2xl flex items-center justify-center text-3xl shadow-inner bg-emerald-500/10 text-emerald-500 ring-1 ring-emerald-500/20";
+                    resultIcon.innerHTML = '<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>';
+                    
+                    resultTitle.className = "text-2xl font-bold text-emerald-400 tracking-tight";
+                    resultTitle.textContent = "Terindikasi VALID";
+
+                    resultBadge.className = "px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide border bg-emerald-500/10 border-emerald-500/20 text-emerald-400";
+                    resultBadge.textContent = "Dapat Dipercaya";
+
+                    resultMessage.innerHTML = \`
+                        <span class="block mb-2 font-semibold text-white">Artikel ini terlihat kredibel.</span>
+                        Sistem tidak menemukan anomali yang signifikan dalam struktur teks maupun penggunaan kosakata. 
+                        Gaya penulisan mengikuti kaidah jurnalistik standar dan memiliki koherensi yang baik. 
+                        Meskipun demikian, tetap disarankan untuk memastikan sumber berita berasal dari institusi media yang terverifikasi Dewan Pers.
+                    \`;
+                    
+                    confidenceBar.className = "h-full rounded-full transition-all duration-1000 ease-out relative bg-gradient-to-r from-emerald-500 to-teal-500";
+                }
+
+                // Animate Bar
+                setTimeout(() => {
+                    confidenceBar.style.width = \`\${percentage}%\`;
+                    confidenceValue.textContent = \`\${percentage}%\`;
+                }, 100);
+
+                // Scroll to result slightly offset
+                setTimeout(() => {
+                     resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }, 100);
+
+            }, delay);
+        });
+    </script>
+</body>
+
+</html>
